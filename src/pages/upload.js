@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import Store from '../stores/index';
+import Styles from '../styles';
 
 class Upload extends React.Component {
   constructor() {
@@ -18,14 +19,13 @@ class Upload extends React.Component {
   }
 
   render() {
-    console.log('props', window.__APP_INITIAL_STATE__);
+    const props = window.__APP_INITIAL_STATE__;
     return (
       <div>
         <div style={{width: 10, height: 10, background: 'red'}} onClick={() => {this.onClick()}}/>
-        <p>
-          This is an upload page, {this.state.counter}
-          Another counter {Store.getState()}
-        </p>
+        <div>This is an upload page, {this.state.counter}</div>
+        <div>Another counter {Store.getState()}</div>
+        <div>{props}</div>
       </div>
     );
   }

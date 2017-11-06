@@ -1,13 +1,13 @@
 import React from 'react';
 import {renderToString} from 'react-dom/server';
-import {Provider} from 'react-redux';
 import express from 'express';
-import ReactRouter from 'react-router';
 import fs from 'fs';
 import Store from './stores/index';
 import Routes from './routes';
+import Db from './helpers/db';
 
-console.log('Store is', Store);
+//CREATE DATABASE IF NOT EXISTS editthis;
+const DataBase = Db.initialize();
 
 const ApiRoutes = Routes.filter(route => {
   return route.isApi;
@@ -15,6 +15,7 @@ const ApiRoutes = Routes.filter(route => {
 
 // get autobind ;)
 // Get request data working
+// get image caching working
 
 const app = express();
 app.set('views', __dirname + '/pages');
@@ -45,7 +46,7 @@ const payload = (props) => {
 const rerender = (req, res) => {
   return () => {
     console.log(`re-rendering '${req.url}'`);
-    //res.send(payload(Store.getState()));
+    //res.write(payload(Store.getState()));
   }
 };
 
@@ -62,6 +63,7 @@ const render = (req, res) => {
     }
     console.log(`rendering '${req.url}'`);
     res.set('Content-Type', 'text/html');
+    //res.set('Connection', 'keep-alive');
     res.send(payload(Store.getState()));
     Store.subscribe(rerender(req, res));
   }
@@ -69,7 +71,12 @@ const render = (req, res) => {
 
 ApiRoutes.forEach(route => {
   console.log(`Adding ${route.path} to the api`);
-  app.use(route.path, route.handler);
+  app.use(
+    route.path,
+    route.handler.bind(null, {
+      db: DataBase
+    })
+  );
 });
 
 app.get('/*', render);

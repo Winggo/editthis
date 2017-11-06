@@ -12,6 +12,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "express": "^4.16.2",
     "express-react-views": "^0.10.4",
+    "mysql": "^2.15.0",
     "nodemon": "^1.12.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
